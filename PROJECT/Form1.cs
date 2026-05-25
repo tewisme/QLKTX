@@ -585,6 +585,18 @@ namespace QLKTX
             QLSV.Show();
         }
 
+        private void button1_MouseMove(object sender, MouseEventArgs e)
+        {
+            Button btn = sender as Button;
+            btn.BackColor = Color.MediumSpringGreen;
+        }
+
+        private void button1_MouseLeave(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+            btn.BackColor = Color.Aquamarine;
+        }
+
         private void btn_payMent_Click(object sender, EventArgs e)
         {
             FrmChiTietThanhToan PayDetail = new FrmChiTietThanhToan(currentRoom);

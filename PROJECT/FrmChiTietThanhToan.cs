@@ -16,7 +16,7 @@ namespace ChucNangThanhToan
     public partial class FrmChiTietThanhToan : Form
     {
         string IDRoom = "";
-        int type = 0;
+        int type = 0, waterNumber = 0, electNumber = 0;
         int elecPrice = 0, waterPrice = 0, servicePrice = 0, roomPrice = 0;
         public FrmChiTietThanhToan(string iDRoom)
         {
@@ -74,7 +74,7 @@ namespace ChucNangThanhToan
                                 waterPrice = Convert.ToInt32(reader["Water"]);
                                 roomPrice = Convert.ToInt32(reader["Room"]);
                                 servicePrice = Convert.ToInt32(reader["Service"]);
-
+                                lb_tiendichvu.Text = servicePrice.ToString();
                             }
                         }
                     }
@@ -433,7 +433,7 @@ namespace ChucNangThanhToan
             g.DrawString("Loại", fontDam, Brushes.Black, x + 30, y + 10);
             g.DrawString("Chỉ số cũ", fontDam, Brushes.Black, x + cot0 + 10, y + 10);
             g.DrawString("Chỉ số mới", fontDam, Brushes.Black, x + cot0 + cot1 + 10, y + 10);
-            g.DrawString("Số đã sử dụng", fontDam, Brushes.Black, x + cot0 + cot1 + cot2 + 10, y + 10);
+            g.DrawString("Số đã dùng", fontDam, Brushes.Black, x + cot0 + cot1 + cot2 + 10, y + 10);
             g.DrawString("Thành tiền", fontDam, Brushes.Black, x + cot0 + cot1 + cot2 + cot3 + 10, y + 10);
             int dienCu = int.Parse(lb_diencu.Text);
             int dienMoi = int.Parse(txt_dienmoi.Text);
