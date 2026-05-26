@@ -211,7 +211,7 @@ namespace ROUTER2
             string IDRoom = tbIdRoom.Text;
 
             AddForm AF = new AddForm(IDRoom, currentGender, this);
-            AF.Show();
+            AF.ShowDialog();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -223,7 +223,7 @@ namespace ROUTER2
                 return;
             }
             EditForm EF = new EditForm(IDStudent, this);
-            EF.Show();
+            EF.ShowDialog();
             EF.Text = "Sửa sinh viên " + tbSelectedNameStudent.Text;
         }
 

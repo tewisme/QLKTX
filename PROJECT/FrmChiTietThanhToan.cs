@@ -266,8 +266,8 @@ namespace ChucNangThanhToan
         {
             try
             {
-                string sqlInsert = @"INSERT INTO Histories (IDRoom, Month, Total, State, Paydate) 
-                             VALUES (@IDRoom, @Month, @Total, @State, @Paydate)";
+                string sqlInsert = @"INSERT INTO Histories (IDRoom, Month, Total, State, Paydate, newWater, oldWater, newElect, oldElect) 
+                             VALUES (@IDRoom, @Month, @Total, @State, @Paydate, @newWater, @oldWater, @newElect, @oldElect)";
 
                 using (SqlConnection connection = new SqlConnection(connectS))
                 {
@@ -282,7 +282,10 @@ namespace ChucNangThanhToan
                         cmd.Parameters.AddWithValue("@Total", tongTien);
                         cmd.Parameters.AddWithValue("@State", "Đã thanh toán");
                         cmd.Parameters.AddWithValue("@Paydate", DateTime.Now.Date);
-
+                        cmd.Parameters.AddWithValue("@oldElect",lb_diencu.Text);
+                        cmd.Parameters.AddWithValue("@oldWater",lb_nuoccu.Text);
+                        cmd.Parameters.AddWithValue("@newElect", txt_dienmoi.Text);
+                        cmd.Parameters.AddWithValue("@newWater", txt_nuocmoi.Text);
                         int rows = cmd.ExecuteNonQuery();
                         return rows > 0;
                     }
@@ -359,7 +362,6 @@ namespace ChucNangThanhToan
                 printPreviewDialog1.ShowDialog();
             }
         }
-
 
         private void txt_dienmoi_Leave_1(object sender, EventArgs e)
         {

@@ -429,18 +429,16 @@ namespace QLKTX
                                 using (SqlCommand cmdFines = new SqlCommand(sqlDeleteFines, connection, transaction))
                                 {
                                     cmdFines.Parameters.AddWithValue("@idRoom", maPhongCanXoa);
-                                    cmdFines.ExecuteNonQuery(); // Chạy lệnh xóa phạt (có thể xóa 0 hoặc nhiều dòng)
+                                    cmdFines.ExecuteNonQuery();
                                 }
 
-                                // Bước 2: Xóa tất cả sinh viên thuộc phòng này trong bảng Students
                                 string sqlDeleteStudents = "DELETE FROM Students WHERE IDRoom = @idRoom";
                                 using (SqlCommand cmdStudents = new SqlCommand(sqlDeleteStudents, connection, transaction))
                                 {
                                     cmdStudents.Parameters.AddWithValue("@idRoom", maPhongCanXoa);
-                                    cmdStudents.ExecuteNonQuery(); // Chạy lệnh xóa sinh viên
+                                    cmdStudents.ExecuteNonQuery();
                                 }
 
-                                // Bước 3: Xóa phòng trong bảng Rooms
                                 string sqlDeleteRoom = "DELETE FROM Rooms WHERE ID = @idRoom";
                                 int roomResult = 0;
                                 using (SqlCommand cmdRoom = new SqlCommand(sqlDeleteRoom, connection, transaction))
@@ -448,8 +446,6 @@ namespace QLKTX
                                     cmdRoom.Parameters.AddWithValue("@idRoom", maPhongCanXoa);
                                     roomResult = cmdRoom.ExecuteNonQuery();
                                 }
-
-                                // Nếu xóa phòng thành công thì xác nhận lưu thay đổi (Commit)
                                 if (roomResult > 0)
                                 {
                                     transaction.Commit();
@@ -463,7 +459,6 @@ namespace QLKTX
                             }
                             catch (Exception exInner)
                             {
-                                // Nếu có bất kỳ lỗi nào ở 1 trong 3 bước, hủy bỏ toàn bộ quá trình xóa
                                 transaction.Rollback();
                                 throw new Exception("Quá trình xóa liên kết thất bại. Chi tiết lỗi: " + exInner.Message);
                             }

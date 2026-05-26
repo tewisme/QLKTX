@@ -69,17 +69,17 @@
             // 
             this.panel1.Controls.Add(this.lb_nuoccu);
             this.panel1.Controls.Add(this.lb_diencu);
-            this.panel1.Controls.Add(this.btn_lichsu);
             this.panel1.Controls.Add(this.txt_nuocmoi);
             this.panel1.Controls.Add(this.txt_dienmoi);
             this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.btn_TrangThai);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1217, 119);
+            this.panel1.Size = new System.Drawing.Size(1353, 119);
             this.panel1.TabIndex = 0;
             // 
             // lb_nuoccu
@@ -107,9 +107,9 @@
             this.btn_lichsu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btn_lichsu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btn_lichsu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_lichsu.Location = new System.Drawing.Point(903, 33);
+            this.btn_lichsu.Location = new System.Drawing.Point(919, 106);
             this.btn_lichsu.Name = "btn_lichsu";
-            this.btn_lichsu.Size = new System.Drawing.Size(240, 44);
+            this.btn_lichsu.Size = new System.Drawing.Size(376, 44);
             this.btn_lichsu.TabIndex = 8;
             this.btn_lichsu.Text = "Lịch sử thanh toán";
             this.btn_lichsu.UseVisualStyleBackColor = false;
@@ -121,7 +121,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_nuocmoi.Location = new System.Drawing.Point(552, 12);
             this.txt_nuocmoi.Name = "txt_nuocmoi";
-            this.txt_nuocmoi.Size = new System.Drawing.Size(128, 22);
+            this.txt_nuocmoi.Size = new System.Drawing.Size(231, 22);
             this.txt_nuocmoi.TabIndex = 6;
             this.txt_nuocmoi.Leave += new System.EventHandler(this.txt_nuocmoi_Leave);
             // 
@@ -131,7 +131,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_dienmoi.Location = new System.Drawing.Point(169, 15);
             this.txt_dienmoi.Name = "txt_dienmoi";
-            this.txt_dienmoi.Size = new System.Drawing.Size(128, 22);
+            this.txt_dienmoi.Size = new System.Drawing.Size(205, 22);
             this.txt_dienmoi.TabIndex = 4;
             this.txt_dienmoi.Leave += new System.EventHandler(this.txt_dienmoi_Leave_1);
             // 
@@ -192,7 +192,7 @@
             this.dsSV.Name = "dsSV";
             this.dsSV.RowHeadersWidth = 82;
             this.dsSV.RowTemplate.Height = 33;
-            this.dsSV.Size = new System.Drawing.Size(1217, 661);
+            this.dsSV.Size = new System.Drawing.Size(1353, 661);
             this.dsSV.TabIndex = 1;
             // 
             // Column1
@@ -235,11 +235,11 @@
             // 
             this.panel2.Controls.Add(this.label10);
             this.panel2.Controls.Add(this.lb_tiendichvu);
+            this.panel2.Controls.Add(this.btn_lichsu);
             this.panel2.Controls.Add(this.lb_tongtien);
             this.panel2.Controls.Add(this.lb_tiennuoc);
             this.panel2.Controls.Add(this.lb_tienphat);
             this.panel2.Controls.Add(this.lb_tiendien);
-            this.panel2.Controls.Add(this.btn_TrangThai);
             this.panel2.Controls.Add(this.btn_InHoaDon);
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.label8);
@@ -249,7 +249,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(0, 579);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1217, 201);
+            this.panel2.Size = new System.Drawing.Size(1353, 201);
             this.panel2.TabIndex = 2;
             // 
             // label10
@@ -311,9 +311,9 @@
             this.btn_TrangThai.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_TrangThai.BackColor = System.Drawing.Color.Tomato;
-            this.btn_TrangThai.Location = new System.Drawing.Point(929, 47);
+            this.btn_TrangThai.Location = new System.Drawing.Point(889, 35);
             this.btn_TrangThai.Name = "btn_TrangThai";
-            this.btn_TrangThai.Size = new System.Drawing.Size(227, 48);
+            this.btn_TrangThai.Size = new System.Drawing.Size(376, 51);
             this.btn_TrangThai.TabIndex = 3;
             this.btn_TrangThai.Text = "Chưa thanh toán";
             this.btn_TrangThai.UseVisualStyleBackColor = false;
@@ -326,9 +326,9 @@
             this.btn_InHoaDon.BackColor = System.Drawing.Color.LightSkyBlue;
             this.btn_InHoaDon.FlatAppearance.MouseOverBackColor = System.Drawing.Color.CornflowerBlue;
             this.btn_InHoaDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_InHoaDon.Location = new System.Drawing.Point(929, 126);
+            this.btn_InHoaDon.Location = new System.Drawing.Point(919, 26);
             this.btn_InHoaDon.Name = "btn_InHoaDon";
-            this.btn_InHoaDon.Size = new System.Drawing.Size(227, 40);
+            this.btn_InHoaDon.Size = new System.Drawing.Size(376, 48);
             this.btn_InHoaDon.TabIndex = 11;
             this.btn_InHoaDon.Text = "In hóa đơn";
             this.btn_InHoaDon.UseVisualStyleBackColor = false;
@@ -408,7 +408,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(1217, 780);
+            this.ClientSize = new System.Drawing.Size(1353, 780);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.dsSV);
             this.Controls.Add(this.panel1);
