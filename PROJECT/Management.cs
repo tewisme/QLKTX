@@ -82,7 +82,6 @@ namespace ROUTER2
                     int maxQuantity = 0;
                     bool isFound = false;
 
-                    // 1. ĐOẠN 1: Dùng Reader để đọc thông tin phòng và lưu vào biến tạm
                     using (SqlCommand cmdRoom = new SqlCommand(sqlSelectRoom, conn))
                     {
                         cmdRoom.Parameters.AddWithValue("@IDRoom", currentRoom);
@@ -108,7 +107,6 @@ namespace ROUTER2
                             quantity = Convert.ToInt32(cmdCount.ExecuteScalar());
                         }
 
-                        // 3. Hiển thị tất cả lên giao diện
                         tbIdRoom.Text = roomId;
                         tbQuantity.Text = quantity.ToString();
                         tbRemain.Text = (maxQuantity - quantity).ToString();
@@ -116,6 +114,7 @@ namespace ROUTER2
                     else
                     {
                         MessageBox.Show("Không tìm thấy thông tin phòng này!", "Thông báo");
+                        this.Close();
                     }
                 }
             }
@@ -209,7 +208,28 @@ namespace ROUTER2
         private void btAdd_Click(object sender, EventArgs e)
         {
             string IDRoom = tbIdRoom.Text;
-
+            string sqlSelectMax = "SELECT MaxQuantity From Rooms Where ID = @id";
+            string sqlSelectQuantity = "SELECT COUNT(ID) From Students Where IDRoom = @id";
+            int maxQuantity = 0, quantity = 0;
+            using (SqlConnection con = new SqlConnection(connString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(sqlSelectMax, con))
+                {
+                    cmd.Parameters.AddWithValue("@id", IDRoom);
+                    maxQuantity = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+                using (SqlCommand cmd = new SqlCommand(sqlSelectQuantity, con))
+                {
+                    cmd.Parameters.AddWithValue("@id", IDRoom);
+                    quantity = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+            if (maxQuantity == quantity)
+            {
+                MessageBox.Show("Phòng đã đầy!", "Thông báo");
+                return;
+            }
             AddForm AF = new AddForm(IDRoom, currentGender, this);
             AF.ShowDialog();
         }
@@ -217,7 +237,7 @@ namespace ROUTER2
         private void btnEdit_Click(object sender, EventArgs e)
         {
             string IDStudent = tbSelectedIDStudent.Text;
-            if (dgvRoom.SelectedRows.Count == 0)
+            if (dgvRoom.SelectedRows.Count == 0 || tbSelectedIDStudent.Text == "")
             {
                 MessageBox.Show("Vui lòng click chọn (bôi xanh) dòng sinh viên cần sửa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

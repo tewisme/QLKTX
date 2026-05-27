@@ -235,6 +235,7 @@
             // 
             // tbSelectedNameStudent
             // 
+            this.tbSelectedNameStudent.Enabled = false;
             this.tbSelectedNameStudent.Location = new System.Drawing.Point(131, 74);
             this.tbSelectedNameStudent.Name = "tbSelectedNameStudent";
             this.tbSelectedNameStudent.Size = new System.Drawing.Size(94, 22);
@@ -242,6 +243,7 @@
             // 
             // tbSelectedIDStudent
             // 
+            this.tbSelectedIDStudent.Enabled = false;
             this.tbSelectedIDStudent.Location = new System.Drawing.Point(131, 39);
             this.tbSelectedIDStudent.Name = "tbSelectedIDStudent";
             this.tbSelectedIDStudent.Size = new System.Drawing.Size(94, 22);

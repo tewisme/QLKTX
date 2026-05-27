@@ -16,7 +16,7 @@ namespace ROUTER2
         Management F1 = null;
         string ID = "";
         string connString = "Data Source=.; Initial Catalog=QLKTX; Integrated Security=True; TrustServerCertificate=True";
-
+        string[] idF = new string[1000];
         public EditForm(string IDStudent, Management MT)
         {
             InitializeComponent();
@@ -37,6 +37,13 @@ namespace ROUTER2
                         adapter.Fill(dt);
 
                     }
+                }
+                int index = 0;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    idF[index] = dr["IDFines"].ToString();
+                    dr["IDFines"] = index;
+                    index += 1;
                 }
                 dt.Columns.Remove("IDStudents");
                 dgvFines.DataSource = dt;
@@ -81,7 +88,7 @@ namespace ROUTER2
             if (currentRow == null) return;
             DialogResult resDia = MessageBox.Show("Bạn có chắc chắn muốn xóa bản ghi này không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (resDia == DialogResult.No) return;
-            string IDFines = currentRow.Cells["IDFines"].Value.ToString();
+            string IDFines = idF[Convert.ToInt32(currentRow.Cells["IDFines"].Value)];
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
