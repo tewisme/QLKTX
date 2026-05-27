@@ -27,8 +27,8 @@ namespace ChucNangThanhToan
         private void FrmLichSuThanhToan_Load(object sender, EventArgs e)
         {
             string connectS = @"Data Source=.;Initial Catalog=QLKTX;Trusted_Connection=True;TrustServerCertificate=True";
-            string query = "SELECT IDRoom, Month, Total, State, Paydate FROM Histories WHERE IDRoom = @id ORDER BY Paydate DESC";
-
+            string query = "SELECT IDRoom, Month, Total, State, Paydate,oldElect, newElect, oldWater, newWater FROM Histories WHERE IDRoom = @id ORDER BY Paydate DESC";
+            
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectS))

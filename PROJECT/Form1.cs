@@ -59,8 +59,8 @@ namespace QLKTX
         SELECT 
             r.ID,
             CASE 
-                WHEN COUNT(s.ID) = 0 THEN N'Còn trống'
-                ELSE N'Không trống'
+                WHEN COUNT(s.ID) = r.MaxQuantity THEN N'Không trống'
+                ELSE N'Còn trống'
             END AS RoomEmpty,
             CAST(COUNT(s.ID) AS nvarchar) + '/' + CAST(r.MaxQuantity AS nvarchar) AS RoomNotEmpty
         FROM Rooms r
@@ -92,15 +92,15 @@ namespace QLKTX
             try
             {
                 if (conn.State == ConnectionState.Closed) conn.Open();
-
                 string sqlSelect = @"
-        SELECT 
-            r.ID,
-            r.Type,
-            COUNT(s.ID) AS Quantity
-        FROM Rooms r
-        LEFT JOIN Students s ON r.ID = s.IDRoom
-        GROUP BY r.ID, r.Type";
+SELECT 
+    r.ID,    
+    r.Type,    
+    COUNT(s.ID) AS Quantity
+FROM Rooms r
+LEFT JOIN Students s ON r.ID = s.IDRoom
+GROUP BY r.ID, r.Type
+HAVING COUNT(s.ID) > 0";
 
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlSelect, conn);
                 DataTable dt = new DataTable();
@@ -111,7 +111,6 @@ namespace QLKTX
             {
                 MessageBox.Show("Lỗi " + ex.Message);
             }
-
         }
         private void label4_Click(object sender, EventArgs e)
         {
@@ -130,22 +129,19 @@ namespace QLKTX
                 if (conn.State == ConnectionState.Closed) conn.Open();
 
                 string sqlSelect = @"
-        SELECT 
-            r.ID,
-            r.Type,
-            CASE 
-                WHEN COUNT(s.ID) = 0 THEN 0
-                ELSE 
-                    COUNT(s.ID) * f.Room 
-                    + r.ElecNumber * f.Elect 
-                    + r.WaterNumber * f.Water 
-                    + f.Service
-            END AS TienPhong
-        FROM Rooms r
-        INNER JOIN Fees f ON r.MaxQuantity = f.Type
-        LEFT JOIN Students s ON r.ID = s.IDRoom
-        GROUP BY r.ID, r.Type, r.ElecNumber, r.WaterNumber, f.Room, f.Elect, f.Water, f.Service
-        ORDER BY TienPhong DESC";
+SELECT 
+    r.ID,
+    r.Type,
+    (COUNT(s.ID) * f.Room 
+     + r.ElecNumber * f.Elect 
+     + r.WaterNumber * f.Water 
+     + f.Service) AS TienPhong
+FROM Rooms r
+INNER JOIN Fees f ON r.MaxQuantity = f.Type
+LEFT JOIN Students s ON r.ID = s.IDRoom
+GROUP BY r.ID, r.Type, r.ElecNumber, r.WaterNumber, f.Room, f.Elect, f.Water, f.Service
+HAVING COUNT(s.ID) > 0
+ORDER BY TienPhong DESC";
 
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlSelect, conn);
                 DataTable dt = new DataTable();
@@ -175,17 +171,17 @@ namespace QLKTX
             try
             {
                 if (conn.State == ConnectionState.Closed) conn.Open();
-
                 string sqlSelect = @"
-        SELECT 
-            r.ID, 
-            r.Type, 
-            ISNULL(SUM(f.Money), 0) AS Fine
-        FROM Rooms r
-        INNER JOIN Students s ON r.ID = s.IDRoom
-        INNER JOIN Fines f ON s.ID = f.IDStudents
-        GROUP BY r.ID, r.Type
-        ORDER BY Fine DESC";
+            SELECT 
+                r.ID, 
+                r.Type, 
+                ISNULL(SUM(f.Money), 0) AS Fine
+            FROM Rooms r
+            LEFT JOIN Students s ON r.ID = s.IDRoom
+            LEFT JOIN Fines f ON s.ID = f.IDStudents
+            GROUP BY r.ID, r.Type
+            HAVING SUM(f.Money) > 0
+            ORDER BY Fine DESC";
 
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlSelect, conn);
                 DataTable dt = new DataTable();
@@ -466,6 +462,7 @@ namespace QLKTX
                     }
 
                     // Tải lại dữ liệu lên giao diện
+                    LoadTongThongKe();
                     LoadDB();
                     if (typeof(Form).GetMethod("LoadFines") != null)
                     {
@@ -590,6 +587,45 @@ namespace QLKTX
         {
             Button btn = sender as Button;
             btn.BackColor = Color.Aquamarine;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            bang = 1;
+            dgvThongKe.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvThongKe.DataSource = null;
+            dgvThongKe.Columns.Clear();
+            dgvThongKe.Columns.Add("ID", "Mã phòng");
+            dgvThongKe.Columns["ID"].DataPropertyName = "ID";
+            dgvThongKe.Columns.Add("RoomNotEmpty", "Phòng có sinh viên ở");
+            dgvThongKe.Columns["RoomNotEmpty"].DataPropertyName = "RoomNotEmpty";
+            dgvThongKe.Columns.Add("RoomEmpty", "Phòng còn trống");
+            dgvThongKe.Columns["RoomEmpty"].DataPropertyName = "RoomEmpty";
+            try
+            {
+                if (conn.State == ConnectionState.Closed) conn.Open();
+
+                string sqlSelect = @"
+        SELECT 
+            r.ID,
+            CASE 
+                WHEN COUNT(s.ID) = r.MaxQuantity THEN N'Không trống'
+                ELSE N'Còn trống'
+            END AS RoomEmpty,
+            CAST(COUNT(s.ID) AS nvarchar) + '/' + CAST(r.MaxQuantity AS nvarchar) AS RoomNotEmpty
+        FROM Rooms r
+        LEFT JOIN Students s ON r.ID = s.IDRoom
+        GROUP BY r.ID, r.MaxQuantity";
+
+                SqlDataAdapter adapter = new SqlDataAdapter(sqlSelect, conn);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                dgvThongKe.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi " + ex.Message);
+            }
         }
 
         private void btn_payMent_Click(object sender, EventArgs e)

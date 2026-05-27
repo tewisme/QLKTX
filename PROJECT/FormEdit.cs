@@ -48,7 +48,16 @@ namespace QLKTX
                 if (conn.State == ConnectionState.Closed)
                     conn.Open();
 
-                string sql = "SELECT * FROM Rooms WHERE ID = @ID";
+                string sql = @"
+            SELECT 
+                r.ID, 
+                COUNT(s.ID) AS ActualQuantity, 
+                r.MaxQuantity, 
+                r.Type
+            FROM Rooms r
+            LEFT JOIN Students s ON r.ID = s.IDRoom
+            WHERE r.ID = @ID
+            GROUP BY r.ID, r.MaxQuantity, r.Type";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@ID", maPhong);
@@ -58,7 +67,9 @@ namespace QLKTX
                 if (reader.Read())
                 {
                     tbID.Text = reader["ID"].ToString();
-                    tbQuantity.Text = reader["Quantity"].ToString();
+
+                    tbQuantity.Text = reader["ActualQuantity"].ToString();
+
                     tbMaxQuantity.Text = reader["MaxQuantity"].ToString();
                     cbbType.Text = reader["Type"].ToString();
                 }
@@ -94,12 +105,12 @@ namespace QLKTX
                     conn.Open();
 
                 string sql = @"
-    UPDATE Rooms
-    SET 
-        Quantity = @Quantity,
-        MaxQuantity = @MaxQuantity,
-        Type = @Type
-    WHERE ID = @ID";
+                    UPDATE Rooms
+                    SET 
+                        Quantity = @Quantity,
+                        MaxQuantity = @MaxQuantity,
+                        Type = @Type
+                    WHERE ID = @ID";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Quantity", tbQuantity.Text);
