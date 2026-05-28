@@ -70,7 +70,7 @@ namespace QLKTX
 
                     tbQuantity.Text = reader["ActualQuantity"].ToString();
 
-                    tbMaxQuantity.Text = reader["MaxQuantity"].ToString();
+                    cbbMaxQuantity.Text = reader["MaxQuantity"].ToString();
                     cbbType.Text = reader["Type"].ToString();
                 }
 
@@ -87,7 +87,7 @@ namespace QLKTX
             try
             {
                 int quantity = int.Parse(tbQuantity.Text);
-                int maxQuantity = int.Parse(tbMaxQuantity.Text);
+                int maxQuantity = int.Parse(cbbMaxQuantity.Text);
 
                 if (quantity > maxQuantity)
                 {
@@ -105,16 +105,16 @@ namespace QLKTX
                     conn.Open();
 
                 string sql = @"
-                    UPDATE Rooms
-                    SET 
-                        Quantity = @Quantity,
-                        MaxQuantity = @MaxQuantity,
-                        Type = @Type
-                    WHERE ID = @ID";
+    UPDATE Rooms
+    SET 
+        Quantity = @Quantity,
+        MaxQuantity = @MaxQuantity,
+        Type = @Type
+    WHERE ID = @ID";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Quantity", tbQuantity.Text);
-                cmd.Parameters.AddWithValue("@MaxQuantity", tbMaxQuantity.Text);
+                cmd.Parameters.AddWithValue("@MaxQuantity", cbbMaxQuantity.Text);
                 cmd.Parameters.AddWithValue("@Type", cbbType.Text);
                 cmd.Parameters.AddWithValue("@ID", maPhong);
 

@@ -49,7 +49,7 @@ namespace ROUTER2
                 dgvFines.DataSource = dt;
             }
         }
-        private void EditForm_Load(object sender, EventArgs e)
+        public void LoadData()
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
@@ -74,6 +74,10 @@ namespace ROUTER2
                     }
                 }
             }
+        }
+        private void EditForm_Load(object sender, EventArgs e)
+        {
+            LoadData();
             LoadFines();
         }
 
@@ -115,7 +119,7 @@ namespace ROUTER2
         {
             try
             {
-                int tmp = Convert.ToInt32(tbFine.Text);
+                int tmp = Convert.ToInt32(cbbLevel.Text);
             }
             catch (Exception ex)
             {
@@ -153,6 +157,10 @@ namespace ROUTER2
                         {
                             MessageBox.Show("Bạn đã thêm thành công!", "Thông báo");
                             LoadFines();
+                            tbReason.Clear();
+                            cbbLevel.Text = "Chọn mức phạt";
+                            tbFine.Clear();
+                            tbFine.Enabled = false;
                         }
                     }
                 }
@@ -160,6 +168,106 @@ namespace ROUTER2
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi: " + ex.Message);
+            }
+        }
+
+        private void button1_MouseLeave(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.BackColor = Color.LightYellow;
+        }
+
+        private void button1_MouseMove(object sender, MouseEventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.BackColor = Color.Yellow;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (tbNameStudent.Text == "")
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ tên", "Thông báo");
+                return;
+            }
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    conn.Open();
+
+                    string sqlUpdate = "UPDATE Students SET FullName = @name Where ID = @id";
+                    using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@name", tbNameStudent.Text);
+                        cmd.Parameters.AddWithValue("@id", tbIdStudent.Text);
+                        int res = cmd.ExecuteNonQuery();
+                        if (res > 0 )
+                        {
+                            MessageBox.Show("Đã sửa tên thành công!","Thông báo");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
+            LoadData();
+        }
+
+        private void cbbLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string level = cbbLevel.SelectedItem.ToString();
+            ComboBox cbb = (ComboBox)sender;
+            cbb.ForeColor = Color.White;
+            if (level == "Nhẹ")
+            {
+                cbb.BackColor = Color.Yellow;
+                tbFine.Text = "50000";
+                tbFine.Enabled = false;
+            }
+            else if (level == "Vừa")
+            {
+                cbb.BackColor = Color.Orange;
+                tbFine.Text = "100000";
+                tbFine.Enabled = false;
+            }
+            else if (level == "Nặng")
+            {
+                cbb.BackColor = Color.Red;
+                tbFine.Text = "200000";
+                tbFine.Enabled = false;
+            }
+            else if (level == "Cực nặng")
+            {
+                tbFine.Clear();
+                cbb.BackColor = Color.Purple;
+                tbFine.Enabled = true;
+            }
+            else
+            {
+                cbb.ForeColor = Color.Black;
+                cbb.BackColor = Color.White;
+            }
+        }
+
+        private void tbFine_Leave_1(object sender, EventArgs e)
+        {
+            try
+            {
+                int tmp = Convert.ToInt32(tbFine.Text);
+                if (cbbLevel.BackColor == Color.Purple)
+                {
+                    if ( tmp < 300000 || tmp > 10000000)
+                    {
+                        MessageBox.Show("Vui lòng nhập số phạt lớn hơn 300 nghìn và nhỏ hơn 10 triệu", "Thông báo");
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Vui lòng nhập số nguyên", "Thông báo");
             }
         }
     }

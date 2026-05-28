@@ -43,6 +43,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel9 = new System.Windows.Forms.Panel();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -51,7 +52,6 @@
             this.tbReason = new System.Windows.Forms.TextBox();
             this.lbReason = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.tbFine = new System.Windows.Forms.TextBox();
             this.lbMoney = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
             this.dtpFine = new System.Windows.Forms.DateTimePicker();
@@ -62,6 +62,9 @@
             this.Reason = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Money = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.cbbLevel = new System.Windows.Forms.ComboBox();
+            this.tbFine = new System.Windows.Forms.TextBox();
+            this.lbLevel = new System.Windows.Forms.Label();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -154,7 +157,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbNameStudent.Location = new System.Drawing.Point(108, 16);
             this.tbNameStudent.Name = "tbNameStudent";
-            this.tbNameStudent.ReadOnly = true;
             this.tbNameStudent.Size = new System.Drawing.Size(842, 22);
             this.tbNameStudent.TabIndex = 4;
             // 
@@ -218,6 +220,7 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.button1);
             this.panel3.Controls.Add(this.tbNameStudent);
             this.panel3.Controls.Add(this.lbNameStudent);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -225,6 +228,19 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1081, 46);
             this.panel3.TabIndex = 1;
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.LightYellow;
+            this.button1.Location = new System.Drawing.Point(971, 8);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(79, 33);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "Sửa";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.MouseLeave += new System.EventHandler(this.button1_MouseLeave);
+            this.button1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.button1_MouseMove);
             // 
             // tableLayoutPanel2
             // 
@@ -257,7 +273,7 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.BackColor = System.Drawing.Color.DarkSalmon;
+            this.btnDelete.BackColor = System.Drawing.Color.Khaki;
             this.btnDelete.Location = new System.Drawing.Point(133, 12);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(79, 33);
@@ -308,7 +324,9 @@
             // 
             // panel7
             // 
+            this.panel7.Controls.Add(this.lbLevel);
             this.panel7.Controls.Add(this.tbFine);
+            this.panel7.Controls.Add(this.cbbLevel);
             this.panel7.Controls.Add(this.lbMoney);
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(550, 5);
@@ -316,21 +334,10 @@
             this.panel7.Size = new System.Drawing.Size(538, 50);
             this.panel7.TabIndex = 1;
             // 
-            // tbFine
-            // 
-            this.tbFine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbFine.Location = new System.Drawing.Point(114, 16);
-            this.tbFine.Name = "tbFine";
-            this.tbFine.Size = new System.Drawing.Size(136, 22);
-            this.tbFine.TabIndex = 10;
-            this.toolTip1.SetToolTip(this.tbFine, "Chỉ nhập số nguyên");
-            this.tbFine.Leave += new System.EventHandler(this.tbFine_Leave);
-            // 
             // lbMoney
             // 
             this.lbMoney.AutoSize = true;
-            this.lbMoney.Location = new System.Drawing.Point(28, 19);
+            this.lbMoney.Location = new System.Drawing.Point(277, 19);
             this.lbMoney.Name = "lbMoney";
             this.lbMoney.Size = new System.Drawing.Size(80, 16);
             this.lbMoney.TabIndex = 9;
@@ -409,6 +416,40 @@
             this.Money.MinimumWidth = 6;
             this.Money.Name = "Money";
             // 
+            // cbbLevel
+            // 
+            this.cbbLevel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbbLevel.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.cbbLevel.FormattingEnabled = true;
+            this.cbbLevel.Items.AddRange(new object[] {
+            "Nhẹ",
+            "Vừa",
+            "Nặng",
+            "Cực nặng"});
+            this.cbbLevel.Location = new System.Drawing.Point(111, 15);
+            this.cbbLevel.Name = "cbbLevel";
+            this.cbbLevel.Size = new System.Drawing.Size(141, 24);
+            this.cbbLevel.TabIndex = 11;
+            this.cbbLevel.SelectedIndexChanged += new System.EventHandler(this.cbbLevel_SelectedIndexChanged);
+            // 
+            // tbFine
+            // 
+            this.tbFine.Enabled = false;
+            this.tbFine.Location = new System.Drawing.Point(363, 15);
+            this.tbFine.Name = "tbFine";
+            this.tbFine.Size = new System.Drawing.Size(143, 22);
+            this.tbFine.TabIndex = 12;
+            this.tbFine.Leave += new System.EventHandler(this.tbFine_Leave_1);
+            // 
+            // lbLevel
+            // 
+            this.lbLevel.AutoSize = true;
+            this.lbLevel.Location = new System.Drawing.Point(17, 19);
+            this.lbLevel.Name = "lbLevel";
+            this.lbLevel.Size = new System.Drawing.Size(64, 16);
+            this.lbLevel.TabIndex = 13;
+            this.lbLevel.Text = "Mức phạt:";
+            // 
             // EditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -469,7 +510,6 @@
         private System.Windows.Forms.Label lbDateFine;
         private System.Windows.Forms.DataGridView dgvFines;
         private System.Windows.Forms.TextBox tbReason;
-        private System.Windows.Forms.TextBox tbFine;
         private System.Windows.Forms.DateTimePicker dtpFine;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnDelete;
@@ -478,5 +518,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Reason;
         private System.Windows.Forms.DataGridViewTextBoxColumn Money;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox cbbLevel;
+        private System.Windows.Forms.Label lbLevel;
+        private System.Windows.Forms.TextBox tbFine;
     }
 }

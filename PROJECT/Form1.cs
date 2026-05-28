@@ -21,7 +21,7 @@ namespace QLKTX
         {
             InitializeComponent();
         }
-        Label lbselect=null;
+        Button lbselect=null;
         int bang = 0;
         string connect = "Data Source=.;Initial Catalog=QLKTX;Trusted_Connection=True;TrustServerCertificate=True;";
         SqlConnection conn = null;
@@ -93,14 +93,14 @@ namespace QLKTX
             {
                 if (conn.State == ConnectionState.Closed) conn.Open();
                 string sqlSelect = @"
-SELECT 
-    r.ID,    
-    r.Type,    
-    COUNT(s.ID) AS Quantity
-FROM Rooms r
-LEFT JOIN Students s ON r.ID = s.IDRoom
-GROUP BY r.ID, r.Type
-HAVING COUNT(s.ID) > 0";
+            SELECT 
+                r.ID,    
+                r.Type,    
+                COUNT(s.ID) AS Quantity
+            FROM Rooms r
+            LEFT JOIN Students s ON r.ID = s.IDRoom
+            GROUP BY r.ID, r.Type
+            HAVING COUNT(s.ID) > 0";
 
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlSelect, conn);
                 DataTable dt = new DataTable();
@@ -111,6 +111,7 @@ HAVING COUNT(s.ID) > 0";
             {
                 MessageBox.Show("Lỗi " + ex.Message);
             }
+
         }
         private void label4_Click(object sender, EventArgs e)
         {
@@ -129,19 +130,19 @@ HAVING COUNT(s.ID) > 0";
                 if (conn.State == ConnectionState.Closed) conn.Open();
 
                 string sqlSelect = @"
-SELECT 
-    r.ID,
-    r.Type,
-    (COUNT(s.ID) * f.Room 
-     + r.ElecNumber * f.Elect 
-     + r.WaterNumber * f.Water 
-     + f.Service) AS TienPhong
-FROM Rooms r
-INNER JOIN Fees f ON r.MaxQuantity = f.Type
-LEFT JOIN Students s ON r.ID = s.IDRoom
-GROUP BY r.ID, r.Type, r.ElecNumber, r.WaterNumber, f.Room, f.Elect, f.Water, f.Service
-HAVING COUNT(s.ID) > 0
-ORDER BY TienPhong DESC";
+            SELECT 
+                r.ID,
+                r.Type,
+                (COUNT(s.ID) * f.Room 
+                 + r.ElecNumber * f.Elect 
+                 + r.WaterNumber * f.Water 
+                 + f.Service) AS TienPhong
+            FROM Rooms r
+            INNER JOIN Fees f ON r.MaxQuantity = f.Type
+            LEFT JOIN Students s ON r.ID = s.IDRoom
+            GROUP BY r.ID, r.Type, r.ElecNumber, r.WaterNumber, f.Room, f.Elect, f.Water, f.Service
+            HAVING COUNT(s.ID) > 0
+            ORDER BY TienPhong DESC";
 
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlSelect, conn);
                 DataTable dt = new DataTable();
@@ -216,9 +217,7 @@ ORDER BY TienPhong DESC";
                 if (conn.State == ConnectionState.Closed)
                     conn.Open();
 
-                // LOGIC CHUẨN ĐÉT:
-                // 1. Kết nối bảng Rooms với bảng Fees bằng điều kiện: r.MaxQuantity = f.Type
-                // 2. Tính số lượng SV thực tế bằng cách COUNT từ bảng Students nhóm theo phòng
+                
                 string sqlThongKe = @"
         SELECT 
             (SELECT COUNT(*) FROM Rooms) AS TongPhong,
@@ -330,19 +329,16 @@ ORDER BY TienPhong DESC";
 
         private void label2_MouseEnter(object sender, EventArgs e)
         {
-            Label lb = (Label)sender;
+            Button lb = (Button)sender;
             lb.BackColor = Color.DarkGray;
         }
 
         private void label2_MouseLeave(object sender, EventArgs e)
         {
-            Label lb = sender as Label;
+            Button lb = sender as Button;
             lb.BackColor = Color.Transparent;
 
-            //if (lb != lbselect )
-            //{
-            //    lb.BackColor = Color.Transparent;
-            //}
+            
         }
 
         //-------------------------------------tab Quản Lý Phòng---------------------------------------------------------------
@@ -573,6 +569,19 @@ ORDER BY TienPhong DESC";
 
         private void btn_sv_Click(object sender, EventArgs e)
         {
+            if (dataList.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Vui lòng chọn phòng trước khi xem sinh viên!",
+                    "Thông báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return;
+            }
+            currentRoom = dataList.SelectedRows[0].Cells[0].Value.ToString();
+            currentGender = dataList.SelectedRows[0].Cells[3].Value.ToString();
+
             Management QLSV = new Management(currentRoom, currentGender, this);
             QLSV.Show();
         }

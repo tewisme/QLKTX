@@ -47,22 +47,46 @@
                     {
                         conn.Open();
                         string sqlSelectStudents = "SELECT *, '' AS Room, '' AS Fine FROM Students WHERE IDRoom = @IDRoom"; DataTable dt = new DataTable();
-                        string sqlSelectRoom = "SELECt * FROM Rooms WHERE ID = @IDRoom";
-                        using (SqlCommand cmdRoom = new SqlCommand(sqlSelectRoom, conn))
+                    // 1. Vẫn lấy MaxQuantity từ bảng Rooms để biết loại phòng
+                    string sqlSelectRoom = "SELECT * FROM Rooms WHERE ID = @IDRoom";
+                    using (SqlCommand cmdRoom = new SqlCommand(sqlSelectRoom, conn))
+                    {
+                        cmdRoom.Parameters.AddWithValue("@IDRoom", IDRoom);
+                        using (SqlDataReader reader = cmdRoom.ExecuteReader())
                         {
-                            cmdRoom.Parameters.AddWithValue("@IDRoom", IDRoom);
-
-                            using (SqlDataReader reader = cmdRoom.ExecuteReader())
+                            if (reader.Read())
                             {
-                                if (reader.Read())
-                                {
-                                    lb_diencu.Text = reader["ElecNumber"].ToString();
-                                    lb_nuoccu.Text = reader["WaterNumber"].ToString();
-                                    type = Convert.ToInt32(reader["MaxQuantity"]);
-                                }
+                                type = Convert.ToInt32(reader["MaxQuantity"]);
                             }
                         }
-                        string sqlSelectFees = "SELECT * FROM Fees Where Type = @type";
+                    }
+
+                    // 2. Lấy số điện nước cũ từ hóa đơn gần nhất trong bảng Histories
+                    string sqlGetLastHistory = @"SELECT TOP 1 newElect, newWater 
+                             FROM Histories 
+                             WHERE IDRoom = @IDRoom 
+                             ORDER BY Paydate DESC, Month DESC";
+
+                    using (SqlCommand cmdHistory = new SqlCommand(sqlGetLastHistory, conn))
+                    {
+                        cmdHistory.Parameters.AddWithValue("@IDRoom", IDRoom);
+                        using (SqlDataReader readerHistory = cmdHistory.ExecuteReader())
+                        {
+                            if (readerHistory.Read())
+                            {
+                                // Nếu có lịch sử: Số cũ tháng này = Số mới của tháng trước
+                                lb_diencu.Text = readerHistory["newElect"].ToString();
+                                lb_nuoccu.Text = readerHistory["newWater"].ToString();
+                            }
+                            else
+                            {
+                                // Nếu không có lịch sử (Phòng mới tinh): Mặc định bằng 0
+                                lb_diencu.Text = "0";
+                                lb_nuoccu.Text = "0";
+                            }
+                        }
+                    }
+                    string sqlSelectFees = "SELECT * FROM Fees Where Type = @type";
                         using (SqlCommand cmd = new SqlCommand(sqlSelectFees, conn))
                         {
                             cmd.Parameters.AddWithValue("@type", type);
@@ -165,7 +189,7 @@
                             else
                             {
                                 btn_TrangThai.Text = "Chưa thanh toán";
-                                btn_TrangThai.BackColor = SystemColors.Control;
+                                btn_TrangThai.BackColor = Color.Tomato;
                             }
                         }
                         else
@@ -182,15 +206,60 @@
             }
             private void btn_lichsu_Click(object sender, EventArgs e)
             {
-            
+
                 FrmLichSuThanhToan frm = new FrmLichSuThanhToan(IDRoom);
                 frm.Text = "Lịch sử thanh toán của phòng " + IDRoom;
                 frm.ShowDialog();
+                if (frm.IsSelected) // kiểm tra xem có chọn dòng nào không hay chỉ bấm X
+                {
+                    btn_TrangThai.Text = "Hóa đơn cũ";
+                    btn_TrangThai.BackColor = Color.Orange;
+                    lb_diencu.Text = frm.SelectedOldElect;
+                    txt_dienmoi.Text = frm.SelectedNewElect;
+                    lb_nuoccu.Text = frm.SelectedOldWater;
+                    txt_nuocmoi.Text = frm.SelectedNewWater;
+                    lb_tienphat.Text = frm.SelectedTotalFine;   
+                    lb_tongtien.Text = frm.SelectedTotal;
+                    int dienCu = Convert.ToInt32(frm.SelectedOldElect);
+                    int dienMoi = Convert.ToInt32(frm.SelectedNewElect);
+                    lb_tiendien.Text = ((dienMoi - dienCu) * elecPrice).ToString();
+
+                    int nuocCu = Convert.ToInt32(frm.SelectedOldWater);
+                    int nuocMoi = Convert.ToInt32(frm.SelectedNewWater);
+                    lb_tiennuoc.Text = ((nuocMoi - nuocCu) * waterPrice).ToString();
+
+                    lb_tienphong.Text = TongTienPhong().ToString();
+
+                    MessageBox.Show("Đã tải dữ liệu hóa đơn cũ lên màn hình! Bạn có thể ấn nút 'In hóa đơn' ngay.", "Thông báo");
+                }
             }
 
             private void btn_TrangThai_Click(object sender, EventArgs e)
             {
                 if (!(sender is Button btn)) return;
+                if(btn.Text =="Hóa đơn cũ")
+                {
+                    LoadData();
+                    if(btn.Text =="Chưa thanh toán")
+                    {
+                    txt_dienmoi.Clear();
+                    txt_nuocmoi.Clear();
+                    lb_tiendichvu.Text = servicePrice.ToString();
+                    lb_tienphat.Text = "0";
+                    lb_tiendien.Text = "0";
+                    lb_tiennuoc.Text = "0";
+                    lb_tongtien.Text = "0";
+                    lb_tienphong.Text = TongTienPhong().ToString();
+                    MessageBox.Show("Tháng này phòng chưa được thanh toán! Vui lòng nhập số liệu mới!", "Thông báo");
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("Tháng này phòng đã được thanh toán!", "Thông báo");
+                    return;
+                }
+                    
+                }
                 if (btn.Text == "Chưa thanh toán")
                 {
                     if (dsSV.Rows.Count == 0 || (dsSV.DataSource as DataTable)?.Rows.Count == 0)
@@ -216,7 +285,7 @@
                             btn.BackColor = Color.FromArgb(127, 255, 0);
                             MessageBox.Show("Đã lưu lịch sử thanh toán thành công!", "Thông báo");
 
-                            string connectS = @"Data Source=PNHUNG;Initial Catalog=QLKTX;Trusted_Connection=True;TrustServerCertificate=True";
+                            string connectS = @"Data Source=.;Initial Catalog=QLKTX;Trusted_Connection=True;TrustServerCertificate=True";
 
                             using (SqlConnection conn = new SqlConnection(connectS))
                             {
@@ -369,15 +438,15 @@
                 }
                 else
                 {
-                    printPreviewDialog1.Document = printDocument1;
-                    PaperSize paperSize = new PaperSize("A4", 827, 1169);
+                        printPreviewDialog1.Document = printDocument1;
+                        PaperSize paperSize = new PaperSize("A4", 827, 1169);
 
-                    printDocument1.DefaultPageSettings.PaperSize = paperSize;
+                        printDocument1.DefaultPageSettings.PaperSize = paperSize;
 
-                    printDocument1.DefaultPageSettings.Margins =
-                        new Margins(50, 50, 50, 50);
-                    printPreviewDialog1.ShowDialog();
-                }
+                        printDocument1.DefaultPageSettings.Margins =
+                            new Margins(50, 50, 50, 50);
+                        printPreviewDialog1.ShowDialog();
+                    }
             }
 
             private void txt_dienmoi_Leave_1(object sender, EventArgs e)

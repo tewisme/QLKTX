@@ -114,7 +114,6 @@ namespace ROUTER2
                     else
                     {
                         MessageBox.Show("Không tìm thấy thông tin phòng này!", "Thông báo");
-                        this.Close();
                     }
                 }
             }
